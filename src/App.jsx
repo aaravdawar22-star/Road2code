@@ -9,13 +9,9 @@ function App() {
   const [knownSkills, setKnownSkills] = useState([])
 
   const handleSubmit = (goal, skills) => {
-    const key = goal === 'Frontend Developer' ? 'frontend'
-      : goal === 'Backend Developer' ? 'backend'
-        : 'aiml'
     setKnownSkills(skills)
-    setCurrentRoadmap(roadmaps[key])
+    setCurrentRoadmap(roadmaps[goal.key])
   }
-
   const handleReset = () => {
     setCurrentRoadmap(null)
     setKnownSkills([])
