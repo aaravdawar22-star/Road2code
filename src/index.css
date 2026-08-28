@@ -1,0 +1,138 @@
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&family=Space+Mono:wght@400;700&display=swap');
+
+/* ---------- Design tokens ---------- */
+/* Beige + dark grey theme, with a highlighted yellow accent. All colors
+   live here as CSS variables (tokens), so every component just says
+   "var(--accent)" etc. and never hardcodes a color. Change a value here
+   and it updates everywhere at once. */
+:root,
+[data-theme='dark'] {
+  /* backgrounds, darkest to lightest */
+  --bg: #1a1a1a;
+  --bg-soft: #212121;
+  --bg-elevated: #262626;
+  --card: #242424;
+  --card-hover: #2c2c2c;
+  --border: #3a3a3a;
+
+  /* text */
+  --text: #d4d4d4;
+  --text-dim: #9a9a9a;
+  --text-heading: #f5f5f5;
+
+  /* highlighted yellow accent (main brand color) + a deeper gold for gradients */
+  --accent: #ffd60a;
+  --accent-strong: #ffe14d;
+  --accent-ink: #1a1a1a;
+  --accent-2: #e6b800;
+  --accent-2-strong: #ffd60a;
+
+  /* status colors (kept green/red so success/error still read clearly) */
+  --success: #5fd99a;
+  --success-bg: rgba(95, 217, 154, 0.12);
+  --danger: #ff8b8b;
+
+  --shadow-soft: 0 10px 30px rgba(0, 0, 0, 0.45);
+  --shadow-lift: 0 18px 44px rgba(0, 0, 0, 0.55);
+  --road-line: rgba(255, 214, 10, 0.5);
+}
+
+[data-theme='light'] {
+  /* backgrounds, warm beige to cream */
+  --bg: #f2e8d5;
+  --bg-soft: #f8f1e3;
+  --bg-elevated: #fffcf6;
+  --card: #fffdf8;
+  --card-hover: #f7efdd;
+  --border: #e0d1ae;
+
+  /* text */
+  --text: #4a4030;
+  --text-dim: #8a7c62;
+  --text-heading: #2b2417;
+
+  /* highlighted yellow accent, saturated so it pops on the beige background */
+  --accent: #e0a500;
+  --accent-strong: #f2c400;
+  --accent-ink: #2b2417;
+  --accent-2: #c68e00;
+  --accent-2-strong: #e0a500;
+
+  --success: #21935f;
+  --success-bg: rgba(33, 147, 95, 0.1);
+  --danger: #c14545;
+
+  --shadow-soft: 0 10px 30px rgba(60, 45, 10, 0.10);
+  --shadow-lift: 0 18px 44px rgba(60, 45, 10, 0.14);
+  --road-line: rgba(224, 165, 0, 0.45);
+}
+
+/* ---------- Reset ---------- */
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Inter', system-ui, sans-serif;
+  font-size: 16px;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  transition: background 0.25s ease, color 0.25s ease;
+}
+
+#root {
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+img, svg {
+  display: block;
+  max-width: 100%;
+}
+
+a {
+  color: inherit;
+}
+
+button {
+  font-family: inherit;
+}
+
+h1, h2, h3, h4 {
+  font-family: 'Space Grotesk', 'Inter', sans-serif;
+  color: var(--text-heading);
+  margin: 0;
+  line-height: 1.15;
+}
+
+p {
+  margin: 0;
+}
+
+ul, ol {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}
