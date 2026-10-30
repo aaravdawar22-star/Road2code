@@ -1,68 +1,64 @@
-// Data for the Career Recommendation Quiz. Each question has six options —
-// one per track in goals.js — always listed in the same order (frontend,
-// backend, aiml, devops, android, dsa) so the quiz feels consistent from
-// question to question. Picking an option scores one point for that
-// option's `goalKey`; whichever track ends up with the most points at the
-// end is the recommendation.
+// Career quiz. Each option adds one point to every track listed in its `goals`.
+// The three tracks with the most points are shown as matches.
 export const quizQuestions = [
-    {
-        id: 1,
-        prompt: "What excites you most about building software?",
-        options: [
-            { text: "Crafting interfaces people actually see and touch", goalKey: "frontend" },
-            { text: "Designing the logic and APIs running behind the scenes", goalKey: "backend" },
-            { text: "Finding patterns in data and teaching machines to learn", goalKey: "aiml" },
-            { text: "Making sure code ships smoothly and keeps running", goalKey: "devops" },
-            { text: "Putting an app in someone's pocket", goalKey: "android" },
-            { text: "Cracking a tricky logic puzzle", goalKey: "dsa" },
-        ],
-    },
-    {
-        id: 2,
-        prompt: "Pick a tool you'd enjoy learning inside and out.",
-        options: [
-            { text: "React components & CSS animation", goalKey: "frontend" },
-            { text: "Databases & REST API design", goalKey: "backend" },
-            { text: "NumPy, Pandas & PyTorch", goalKey: "aiml" },
-            { text: "Docker, Kubernetes & CI/CD pipelines", goalKey: "devops" },
-            { text: "Kotlin & Jetpack Compose", goalKey: "android" },
-            { text: "Competitive programming problem sets", goalKey: "dsa" },
-        ],
-    },
-    {
-        id: 3,
-        prompt: "What would your ideal weekend project look like?",
-        options: [
-            { text: "Redesigning a messy website's UI", goalKey: "frontend" },
-            { text: "Building a server that handles logins and data", goalKey: "backend" },
-            { text: "Training a small model on a dataset you like", goalKey: "aiml" },
-            { text: "Setting up an automated deployment pipeline", goalKey: "devops" },
-            { text: "Shipping a small app to the Play Store", goalKey: "android" },
-            { text: "Solving a stack of LeetCode problems", goalKey: "dsa" },
-        ],
-    },
-    {
-        id: 4,
-        prompt: "Which of these feels most satisfying?",
-        options: [
-            { text: "Watching your work render pixel by pixel", goalKey: "frontend" },
-            { text: "Watching a request flow correctly through your API", goalKey: "backend" },
-            { text: "Watching a model's accuracy tick upward", goalKey: "aiml" },
-            { text: "Watching a pipeline finally turn green", goalKey: "devops" },
-            { text: "Watching someone open your app for the first time", goalKey: "android" },
-            { text: "Watching a hard algorithm finally click", goalKey: "dsa" },
-        ],
-    },
-    {
-        id: 5,
-        prompt: "Where do you picture yourself working in a few years?",
-        options: [
-            { text: "Frontend / UI engineer", goalKey: "frontend" },
-            { text: "Backend / platform engineer", goalKey: "backend" },
-            { text: "AI / ML engineer", goalKey: "aiml" },
-            { text: "DevOps / site reliability engineer", goalKey: "devops" },
-            { text: "Mobile app developer", goalKey: "android" },
-            { text: "SDE with strong problem-solving chops", goalKey: "dsa" },
-        ],
-    },
+  {
+    id: 1,
+    prompt: 'What sounds most fun to build?',
+    options: [
+      { text: 'A website people use every day', goals: ['frontend', 'fullstack', 'uiux'] },
+      { text: 'The server and database behind an app', goals: ['backend', 'fullstack', 'cloud'] },
+      { text: 'Something that learns from data', goals: ['aiml', 'datascience'] },
+      { text: 'A game or a mobile app', goals: ['gamedev', 'android'] },
+    ],
+  },
+  {
+    id: 2,
+    prompt: 'Which school subject did you enjoy most?',
+    options: [
+      { text: 'Art or design', goals: ['uiux', 'frontend', 'gamedev'] },
+      { text: 'Maths', goals: ['aiml', 'dsa', 'datascience'] },
+      { text: 'Physics or electronics', goals: ['gamedev', 'devops', 'android'] },
+      { text: 'Logic puzzles and computers', goals: ['dsa', 'backend', 'cybersecurity'] },
+    ],
+  },
+  {
+    id: 3,
+    prompt: 'How do you like to work?',
+    options: [
+      { text: 'Seeing results on screen right away', goals: ['frontend', 'uiux', 'android'] },
+      { text: 'Digging into numbers and patterns', goals: ['datascience', 'aiml'] },
+      { text: 'Keeping systems fast, safe and running', goals: ['devops', 'cloud', 'cybersecurity'] },
+      { text: 'Solving one hard problem at a time', goals: ['dsa', 'backend', 'aiml'] },
+    ],
+  },
+  {
+    id: 4,
+    prompt: 'Pick a tool you would like to master.',
+    options: [
+      { text: 'Figma or React', goals: ['uiux', 'frontend'] },
+      { text: 'Python and Jupyter notebooks', goals: ['datascience', 'aiml'] },
+      { text: 'Docker and AWS', goals: ['devops', 'cloud'] },
+      { text: 'Unity or Android Studio', goals: ['gamedev', 'android'] },
+    ],
+  },
+  {
+    id: 5,
+    prompt: 'What would you do on a free weekend?',
+    options: [
+      { text: 'Redesign a website I find confusing', goals: ['uiux', 'frontend'] },
+      { text: 'Build a full app with login and a database', goals: ['fullstack', 'backend'] },
+      { text: 'Look for security flaws in a practice lab', goals: ['cybersecurity', 'cloud'] },
+      { text: 'Solve contest problems on LeetCode', goals: ['dsa'] },
+    ],
+  },
+  {
+    id: 6,
+    prompt: 'Where do you see yourself in five years?',
+    options: [
+      { text: 'Building products at a startup', goals: ['fullstack', 'frontend', 'android'] },
+      { text: 'Working with data at a big company', goals: ['datascience', 'aiml'] },
+      { text: 'Running cloud infrastructure or security', goals: ['cloud', 'devops', 'cybersecurity'] },
+      { text: 'Cracking interviews at top tech companies', goals: ['dsa', 'backend'] },
+    ],
+  },
 ]

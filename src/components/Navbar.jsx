@@ -1,108 +1,115 @@
 import { useEffect, useState } from 'react'
 import { NavLink } from 'react-router-dom'
+import { LogOut, Menu, Moon, Search, Sun, X } from 'lucide-react'
+import BrandMark from './BrandMark'
+import { useAuth } from '../context/AuthContext'
+import { useToast } from '../context/ToastContext'
+import { useTheme } from '../hooks/useTheme'
+import { navLinks } from '../data/navLinks'
 
-// This component receives everything it needs (theme, currentUser, etc.)
-// as PROPS from App.jsx instead of holding that data itself. Navbar only
-// keeps its own local UI state: whether the mobile menu is open, and
-// whether the page has been scrolled.
-//
-// NavLink works like a normal link (it changes the URL and swaps the
-// page) but it also knows when its own "to" matches the current URL, so
-// we can highlight whichever page is active — see the className function
-// below.
-const links = [
-    { to: '/', label: 'Home', end: true },
-    { to: '/courses', label: 'Courses' },
-    { to: '/quiz', label: 'Quiz' },
-    { to: '/search', label: 'Search' },
-    { to: '/prerequisites', label: 'Prereqs' },
-    { to: '/about', label: 'About' },
-]
+const isMac = typeof navigator !== 'undefined' && navigator.userAgent.includes('Mac')
 
-function Navbar({ theme, onToggleTheme, currentUser, onLogout, onAuthOpen }) {
-    const [menuOpen, setMenuOpen] = useState(false)
-    const [scrolled, setScrolled] = useState(false)
+function Navbar({ onOpenPalette }) {
+  const { currentUser, logout, openAuth } = useAuth()
+  const showToast = useToast()
+  const { theme, toggleTheme } = useTheme()
+  const [menuOpen, setMenuOpen] = useState(false)
+  const [scrolled, setScrolled] = useState(false)
 
-    // Listens for scroll events on the whole window and flips `scrolled`
-    // to true once the page has scrolled down more than 12px — this is
-    // what makes the navbar shrink/elevate itself via CSS.
-    // The cleanup function (return ...) removes the listener when this
-    // component unmounts, so it doesn't keep running forever.
-    useEffect(() => {
-        const handleScroll = () => setScrolled(window.scrollY > 12)
-        window.addEventListener('scroll', handleScroll)
-        return () => window.removeEventListener('scroll', handleScroll)
-    }, [])
+  // Adds a border once the page is scrolled. The cleanup removes the listener on unmount.
+  useEffect(() => {
+    const handleScroll = () => setScrolled(window.scrollY > 8)
+    window.addEventListener('scroll', handleScroll)
+    return () => window.removeEventListener('scroll', handleScroll)
+  }, [])
 
-    const handleLinkClick = () => setMenuOpen(false)
+  const closeMenu = () => setMenuOpen(false)
+  const nextTheme = theme === 'dark' ? 'light' : 'dark'
 
-    return (
-        <header className={`navbar ${scrolled ? 'navbar--scrolled' : ''}`}>
-            <div className="navbar__inner">
-                <NavLink to="/" className="navbar__brand" onClick={handleLinkClick}>
-                    <span className="navbar__mark" aria-hidden="true">R2C</span>
-                    Road2Code
-                </NavLink>
+  const handleLogout = () => {
+    logout()
+    closeMenu()
+    showToast('Logged out')
+  }
 
-                <nav className={`navbar__links ${menuOpen ? 'is-open' : ''}`} aria-label="Primary">
-                    {links.map(link => (
-                        <NavLink
-                            key={link.to}
-                            to={link.to}
-                            end={link.end}
-                            onClick={handleLinkClick}
-                            className={({ isActive }) => (isActive ? 'is-active' : undefined)}
-                        >
-                            {link.label}
-                        </NavLink>
-                    ))}
-                    <div className="navbar__mobile-actions">
-                        {currentUser ? (
-                            <button className="btn btn--ghost" onClick={() => { onLogout(); handleLinkClick() }}>
-                                Log out
-                            </button>
-                        ) : (
-                            <button className="btn btn--primary" onClick={() => { onAuthOpen('login'); handleLinkClick() }}>
-                                Log in / Sign up
-                            </button>
-                        )}
-                    </div>
-                </nav>
+  return (
+    <header className={`navbar ${scrolled ? 'navbar--scrolled' : ''}`}>
+      <div className="navbar__inner">
+        <NavLink to="/" className="brand" onClick={closeMenu}>
+          <BrandMark />
+          <span>Road2Code</span>
+        </NavLink>
 
-                <div className="navbar__actions">
-                    <button
-                        className="theme-toggle"
-                        onClick={onToggleTheme}
-                        aria-label={`Switch to ${theme === 'dark' ? 'light' : 'dark'} mode`}
-                        title={`Switch to ${theme === 'dark' ? 'light' : 'dark'} mode`}
-                    >
-                        <span className="theme-toggle__icon">{theme === 'dark' ? '☾' : '☀'}</span>
-                    </button>
+        <nav className={`navbar__links ${menuOpen ? 'is-open' : ''}`} aria-label="Primary">
+          {navLinks.map(link => (
+            <NavLink
+              key={link.to}
+              to={link.to}
+              onClick={closeMenu}
+              className={({ isActive }) => `nav-link ${isActive ? 'is-active' : ''}`}
+            >
+              {link.label}
+            </NavLink>
+          ))}
 
-                    {currentUser ? (
-                        <div className="navbar__user">
-                            <span className="navbar__avatar">{currentUser.name.charAt(0).toUpperCase()}</span>
-                            <span className="navbar__username">{currentUser.name.split(' ')[0]}</span>
-                            <button className="btn btn--ghost btn--sm" onClick={onLogout}>Log out</button>
-                        </div>
-                    ) : (
-                        <button className="btn btn--primary btn--sm" onClick={() => onAuthOpen('login')}>
-                            Log in / Sign up
-                        </button>
-                    )}
+          <div className="navbar__mobile-actions">
+            {currentUser ? (
+              <>
+                <NavLink to="/progress" className="btn" onClick={closeMenu}>My progress</NavLink>
+                <button className="btn" onClick={handleLogout}>Log out</button>
+              </>
+            ) : (
+              <button className="btn btn--primary" onClick={() => { openAuth('login'); closeMenu() }}>
+                Log in
+              </button>
+            )}
+          </div>
+        </nav>
 
-                    <button
-                        className={`hamburger ${menuOpen ? 'is-open' : ''}`}
-                        onClick={() => setMenuOpen(o => !o)}
-                        aria-label="Toggle menu"
-                        aria-expanded={menuOpen}
-                    >
-                        <span></span><span></span><span></span>
-                    </button>
-                </div>
+        <div className="navbar__actions">
+          <button className="palette-trigger" onClick={onOpenPalette} aria-label="Open command palette">
+            <Search size={15} aria-hidden="true" />
+            <span className="palette-trigger__text">Search</span>
+            <kbd>{isMac ? '⌘K' : 'Ctrl K'}</kbd>
+          </button>
+
+          <button
+            className="icon-btn"
+            onClick={toggleTheme}
+            aria-label={`Switch to ${nextTheme} mode`}
+            title={`Switch to ${nextTheme} mode`}
+          >
+            {theme === 'dark' ? <Sun size={18} /> : <Moon size={18} />}
+          </button>
+
+          {currentUser ? (
+            <div className="navbar__user">
+              <NavLink to="/progress" className="user-chip" title="My progress">
+                <span className="avatar">{currentUser.name.charAt(0).toUpperCase()}</span>
+                <span className="user-chip__name">{currentUser.name.split(' ')[0]}</span>
+              </NavLink>
+              <button className="icon-btn" onClick={handleLogout} aria-label="Log out" title="Log out">
+                <LogOut size={17} />
+              </button>
             </div>
-        </header>
-    )
+          ) : (
+            <button className="btn btn--primary btn--sm navbar__login" onClick={() => openAuth('login')}>
+              Log in
+            </button>
+          )}
+
+          <button
+            className="icon-btn hamburger"
+            onClick={() => setMenuOpen(open => !open)}
+            aria-label="Toggle menu"
+            aria-expanded={menuOpen}
+          >
+            {menuOpen ? <X size={20} /> : <Menu size={20} />}
+          </button>
+        </div>
+      </div>
+    </header>
+  )
 }
 
 export default Navbar

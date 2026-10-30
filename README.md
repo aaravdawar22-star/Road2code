@@ -1,73 +1,81 @@
-# Road2Code 🚀
+# Road2Code
 
-A personalized learning-roadmap generator. Pick a career track, tell it what you
-already know, and it hands back an ordered checklist of stops — each with a video
-and written docs — with your progress saved in the browser.
+Pick a career track, tick the skills you already know, and Road2Code turns them into an
+ordered learning route: 8 stops per track, each with a video, the docs, practice projects,
+your own notes and fresh articles from the DEV community. Progress is saved per account in
+the browser.
 
 ## Run it
 
 ```bash
 npm install
-npm run dev
+npm run dev      # start the dev server, then open the printed localhost URL
+npm run build    # production build in dist/
+npm run lint     # check the code with oxlint
 ```
 
-Then open the printed `localhost` URL. `npm run build` produces a production
-build in `dist/`.
+## Features
 
-## What's inside
+| Page | Route | What it does |
+| --- | --- | --- |
+| Home | `/` | Interactive route map that cycles through all 12 tracks, plus a daily challenge loaded with `fetch` |
+| Courses | `/courses` | All 12 tracks as a board, with category filters and sorting |
+| Generator | `/generator` | Choose a track and the skills you already know |
+| Roadmap | `/roadmap/:goalKey` | The route for one track: tick stops, "You are here", notes and live articles per stop |
+| Quiz | `/quiz` | Six questions that rank your three best-fit tracks |
+| Search | `/search` | Debounced search across all 96 stops, with a track filter, sorting and highlighted matches |
+| Prereqs | `/prerequisites` | What to learn before a technology, and what comes next |
+| About | `/about` | Why the project exists, with stats worked out from the data |
+| My progress | `/progress` | Logged-in users only: progress and next stop on every track |
+| 404 | any other URL | Not-found page (also shown for an unknown track) |
 
-- **Navbar** — fixed header with smooth-scroll links (Home / How it works /
-  Courses / About), a scroll-aware "elevated" state, a mobile hamburger menu,
-  and the login/signup + theme controls.
-- **Hero** — an auto-rotating slider of the six tracks, with an animated SVG
-  "road" that visually ties back to the site name.
-- **How it works** — the four-step flow as a semantic `<ol>`.
-- **Courses** — a card grid of all six tracks; clicking one jumps straight to
-  the generator with that track pre-selected.
-- **About** — what the project is and why it exists.
-- **Skill input → Roadmap generator** — pick a goal, tick the skills you
-  already know, and generate an ordered roadmap. Steps that match a known
-  skill are pre-marked done.
-- **Progress tracker** — every step has a "mark complete" toggle, backed by a
-  live progress bar. Progress is written to `localStorage` per user (or to a
-  shared "guest" bucket if you're not logged in), so it survives a refresh.
-- **Login / Signup** — a modal with both flows. Accounts and sessions are
-  stored in `localStorage` — there's no backend, so this is a **frontend-only
-  demo of auth**, not real security (see the comment in `AuthContext.jsx`).
-- **Dark / light mode** — a toggle in the navbar flips a `data-theme`
-  attribute on `<html>`; both themes are driven entirely by CSS variables in
-  `src/index.css`. The dark theme is a deep navy/indigo (`#10121c`) with warm
-  amber + violet accents — not a flat black-and-neon look.
+Also on every page:
+
+- **Command palette:** press `Ctrl+K` (or `⌘K` on a Mac) to jump to any page or route with the keyboard.
+- **Toasts:** short pop-up confirmations for ticks, notes, copying a link, logging in and out.
+- **Light and dark themes,** remembered between visits.
+
+Login and signup are a frontend-only demo: accounts live in `localStorage` and
+passwords are only Base64-encoded, so this is not real security.
 
 ## Folder structure
 
 ```
 src/
-  components/     UI components (Navbar, Hero, Courses, About, HowItWorks,
-                   SkillInput, Roadmap, ProgressBar, ResourceCard, AuthModal,
-                   Footer)
-  context/        AuthContext, ThemeContext (React Context + hooks)
-  hooks/          useLocalStorage — reusable localStorage-backed state
-  data/           roadmaps.js (the step data), goals.js (track metadata)
-  styles/         App.css
-  index.css       design tokens (CSS variables) + global reset
+  main.jsx              entry point: fonts, then <App /> inside ToastProvider and AuthProvider
+  App.jsx               routes + lifted state shared between pages
+  context/              AuthContext/AuthProvider and ToastContext/ToastProvider
+  hooks/                useLocalStorage, useTheme, useDebounce, useNotes, useArticles
+  components/           Layout, Navbar, Footer, CommandPalette, AuthModal, ProtectedRoute,
+                        Hero, DailyChallenge, Roadmap, StepNotes, StepArticles,
+                        RouteLine, ProgressBar, ResourceCard, TrackIcon, BrandMark
+  pages/                one component per route
+  data/                 tracks, roadmap steps, quiz, prerequisites, project ideas, nav links
+  utils/storage.js      the localStorage keys for progress and notes
+  index.css             colour variables for both themes + global reset
+  styles/App.css        component styles
+public/
+  challenges.json       questions for the daily challenge
 ```
 
-## Syllabus mapping
+## React concepts used
 
-- **HTML/CSS** — semantic elements (`<header>`, `<nav>`, `<main>`, `<section>`,
-  `<footer>`, `<ol>`), CSS custom properties for theming, responsive layout.
-- **JavaScript / clean code** — components split by responsibility, a
-  reusable `useLocalStorage` hook, consistent naming, no dead code.
-- **DOM manipulation** — `document.documentElement.setAttribute` for theme
-  switching, `scrollIntoView`, `addEventListener('scroll'/'keydown')`,
-  focus management in the auth modal.
-- **React basics** — functional components throughout, props, `useState`,
-  `useEffect` for auth, theming, and hero behavior
-  slider/timer.
-
-## Added learning-focused features
-
-- Daily Coding Challenge built with a functional component and `useState`.
-- Expanded About page using semantic HTML and reusable components.
-- Existing roadmap progress tracking remains unchanged.
+| Concept | Where |
+| --- | --- |
+| Components, props, JSX | every file in `components/` and `pages/` |
+| Reusable components | `RouteLine` (hero, courses board, prerequisites), `ProgressBar` (roadmap, progress, quiz) |
+| `useState` (incl. lazy initial state) | `QuizPage`, `GeneratorPage`, `StepNotes`, `useLocalStorage` |
+| `useEffect` with cleanup | `Layout` (Ctrl+K), `Navbar` (scroll), `AuthModal` (Escape), `Hero` (timer), `ToastProvider` (auto-dismiss), `useDebounce`, `useArticles` (AbortController) |
+| `useRef` | `SearchPage` (focus the input), `CommandPalette` (focus + scroll), `ToastProvider` (id counter) |
+| `useMemo` | `SearchPage` (filtered and sorted results) |
+| `useCallback` | `AuthProvider` (`closeAuth`), `ToastProvider` (`showToast`, `dismiss`) |
+| Custom hooks | `useLocalStorage`, `useTheme`, `useDebounce`, `useNotes`, `useArticles`, `useAuth`, `useToast` |
+| Context API | `AuthContext` (logged-in user) and `ToastContext` (`showToast` from anywhere) |
+| Lifting state up | `App.jsx` (`pickedGoal`, `knownSkills`) |
+| Derived state | `CoursesPage` (filter + sort), `QuizPage` (`finished`), `Roadmap` (next stop) |
+| Immutable updates of nested data | `useNotes` (add, edit, delete notes inside an object of arrays) |
+| Lists and keys, `key` to re-mount | every page; `Hero` and `RoadmapPage` use `key` to reset a component |
+| Controlled forms with validation | `AuthModal`, `StepNotes`, `SearchPage` |
+| React Router | nested routes + `Outlet`, `NavLink`, `useNavigate`, `useParams`, `useLocation`, protected route, 404 |
+| Async data: loading, error, retry, pagination | `DailyChallenge`, `useArticles` + `StepArticles` (DEV.to API) |
+| Keyboard events | `CommandPalette` (arrows, Enter, Escape), `Layout` (Ctrl+K) |
